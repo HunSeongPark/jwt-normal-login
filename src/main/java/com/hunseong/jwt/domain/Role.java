@@ -11,7 +11,6 @@ import javax.persistence.*;
  * @date : 2022-07-04
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 public class Role {
@@ -21,4 +20,8 @@ public class Role {
     private Long id;
 
     private String name;
+
+    public Role(String name) {
+        this.name = name;
+    }
 }

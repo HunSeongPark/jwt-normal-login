@@ -1,9 +1,13 @@
 package com.hunseong.jwt.domain.dto;
 
 import com.hunseong.jwt.domain.Account;
+import com.hunseong.jwt.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author : Hunseong-Park

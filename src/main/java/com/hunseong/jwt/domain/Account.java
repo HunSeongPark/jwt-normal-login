@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,5 +28,5 @@ public class Account {
     private String password;
 
     @ManyToMany
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 }
