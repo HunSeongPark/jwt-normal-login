@@ -3,6 +3,7 @@ package com.hunseong.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hunseong.jwt.domain.Account;
@@ -103,6 +104,9 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         String username = decodedJWT.getSubject();
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
+        if (!account.getRefreshToken().equals(refreshToken)) {
+            throw new JWTVerificationException("유효하지 않은 Refresh Token 입니다.");
+        }
         // TODO refresh token 만료 시 에러메시지 -> ExceptionHandler에서 처리 TokenExpiredException
         // TODO RT 유효하지 않을 시 에러메시지 -> ExceptionHandler에서 처리 JWTVerificationException
         String accessToken = JWT.create()
@@ -121,7 +125,7 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         long diffMin = (refreshExpireTime - now) / 1000 / 60;
         log.info("========= DIFFDAYS : {} =========", diffDays);
         log.info("========= DIFFMIN : {} =========", diffMin);
-        log.info("========= refreshTime : {} =========", LocalDateTime.ofInstant(Instant.ofEpochMilli(refreshExpireTime),
+        log.info("========= refresh Exp Time : {} =========", LocalDateTime.ofInstant(Instant.ofEpochMilli(refreshExpireTime),
                 TimeZone.getDefault().toZoneId()));
         log.info("========= now : {} =========", LocalDateTime.ofInstant(Instant.ofEpochMilli(now),
                 TimeZone.getDefault().toZoneId()));
