@@ -8,10 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import java.util.Map;
 
-import static com.hunseong.jwt.security.JwtConstants.TOKEN_HEADER_PREFIX;
+import static com.hunseong.jwt.security.JwtConstants.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
@@ -51,7 +52,7 @@ public class AccountApiController {
     }
 
     @GetMapping("/refresh")
-    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request, HttpServletResponse response) {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
@@ -59,6 +60,10 @@ public class AccountApiController {
         }
         String refreshToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
         Map<String, String> tokens = accountService.refresh(refreshToken);
+        response.setHeader(AT_HEADER, tokens.get(AT_HEADER));
+        if (tokens.get(RT_HEADER) != null) {
+            response.setHeader(RT_HEADER, tokens.get(RT_HEADER));
+        }
         return ResponseEntity.ok(tokens);
     }
 }
