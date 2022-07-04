@@ -10,9 +10,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtUtil {
 
-    @Value("${JWT_SECRET_KEY}")
-    public String JWT_SECRET;
-
+    // Expiration Time
     public static final int AT_EXP_TIME =  1 * (1000 * 60);
     public static final int RT_EXP_TIME =  10 * (1000 * 60);
+
+    // Secret
+    public static final String JWT_SECRET = "jwt_secret_key_hunseong_secret_key_jwt";
+
+    // Header
+    public static final String AT_HEADER = "access_token";
+    public static final String RT_HEADER = "refresh_token";
 }
