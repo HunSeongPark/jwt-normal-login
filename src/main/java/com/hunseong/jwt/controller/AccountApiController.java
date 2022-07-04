@@ -7,6 +7,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.Map;
+
+import static com.hunseong.jwt.security.JwtConstants.TOKEN_HEADER_PREFIX;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 /**
  * @author : Hunseong-Park
  * @date : 2022-07-04
@@ -41,5 +48,17 @@ public class AccountApiController {
     @GetMapping("/admin")
     public ResponseEntity<String> admin() {
         return ResponseEntity.ok("Admin");
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<Map<String, String>> refresh(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader(AUTHORIZATION);
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith(TOKEN_HEADER_PREFIX)) {
+            throw new RuntimeException("JWT Token이 존재하지 않습니다.");
+        }
+        String refreshToken = authorizationHeader.substring(TOKEN_HEADER_PREFIX.length());
+        Map<String, String> tokens = accountService.refresh(refreshToken);
+        return ResponseEntity.ok(tokens);
     }
 }
