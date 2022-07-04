@@ -29,4 +29,10 @@ public class Account {
 
     @ManyToMany
     private List<Role> roles = new ArrayList<>();
+
+    private String refreshToken;
+
+    public void updateRefreshToken(String newToken) {
+        this.refreshToken = newToken;
+    }
 }

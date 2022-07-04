@@ -76,4 +76,10 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         account.getRoles().add(role);
         return account.getId();
     }
+
+    @Override
+    public void updateRefreshToken(String username, String refreshToken) {
+        Account account = accountRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        account.updateRefreshToken(refreshToken);
+    }
 }

@@ -11,4 +11,6 @@ public interface AccountService {
     Long saveAccount(AccountRequestDto dto);
     Long saveRole(String roleName);
     Long addRoleToUser(RoleToUserRequestDto dto);
+
+    void updateRefreshToken(String username, String refreshToken);
 }
