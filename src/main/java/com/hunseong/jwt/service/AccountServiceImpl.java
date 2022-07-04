@@ -7,9 +7,18 @@ import com.hunseong.jwt.domain.dto.RoleToUserRequestDto;
 import com.hunseong.jwt.repository.AccountRepository;
 import com.hunseong.jwt.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author : Hunseong-Park
@@ -18,11 +27,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class AccountServiceImpl implements AccountService {
+public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("UserDetailsService - loadUserByUsername : 사용자를 찾을 수 없습니다."));
+
+        List<SimpleGrantedAuthority> authorities = account.getRoles()
+                .stream().map(role -> new SimpleGrantedAuthority(role.getName())).toList();
+
+        return new User(account.getUsername(), account.getPassword(), authorities);
+    }
 
     @Override
     public Long saveAccount(AccountRequestDto dto) {
