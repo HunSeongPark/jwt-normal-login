@@ -1,6 +1,7 @@
 package com.hunseong.jwt.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * @date : 2022-07-04
  */
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
