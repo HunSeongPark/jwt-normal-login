@@ -1,14 +1,10 @@
 package com.hunseong.jwt.security;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 /**
  * @author : Hunseong-Park
  * @date : 2022-07-04
  */
-@Component
-public class JwtUtil {
+public class JwtConstants {
 
     // Expiration Time
     public static final int AT_EXP_TIME =  1 * (1000 * 60);
@@ -20,4 +16,5 @@ public class JwtUtil {
     // Header
     public static final String AT_HEADER = "access_token";
     public static final String RT_HEADER = "refresh_token";
+    public static final String TOKEN_HEADER_PREFIX = "Bearer ";
 }

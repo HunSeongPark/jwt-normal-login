@@ -3,20 +3,14 @@ package com.hunseong.jwt.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hunseong.jwt.domain.Account;
-import com.hunseong.jwt.repository.AccountRepository;
 import com.hunseong.jwt.service.AccountService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -24,8 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.hunseong.jwt.security.JwtUtil.*;
-import static com.hunseong.jwt.security.JwtUtil.RT_HEADER;
+import static com.hunseong.jwt.security.JwtConstants.*;
+import static com.hunseong.jwt.security.JwtConstants.RT_HEADER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
