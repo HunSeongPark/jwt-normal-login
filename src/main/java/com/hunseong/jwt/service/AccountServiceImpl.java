@@ -107,8 +107,6 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
         if (!account.getRefreshToken().equals(refreshToken)) {
             throw new JWTVerificationException("유효하지 않은 Refresh Token 입니다.");
         }
-        // TODO refresh token 만료 시 에러메시지 -> ExceptionHandler에서 처리 TokenExpiredException
-        // TODO RT 유효하지 않을 시 에러메시지 -> ExceptionHandler에서 처리 JWTVerificationException
         String accessToken = JWT.create()
                 .withSubject(account.getUsername())
                 .withExpiresAt(new Date(now + AT_EXP_TIME))
