@@ -54,14 +54,20 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             new ObjectMapper().writeValue(response.getWriter(), errorResponse);
         } else {
             try {
+                // Access Token만 꺼내옴
                 String accessToken = authrizationHeader.substring(TOKEN_HEADER_PREFIX.length());
+
+                // === Access Token 검증 === //
                 JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET)).build();
                 DecodedJWT decodedJWT = verifier.verify(accessToken);
+
+                // === Access Token 내 Claim에서 Authorities 꺼내 Authentication 객체 생성 & SecurityContext에 저장 === //
                 List<String> strAuthorities = decodedJWT.getClaim("roles").asList(String.class);
                 List<SimpleGrantedAuthority> authorities = strAuthorities.stream().map(SimpleGrantedAuthority::new).toList();
                 String username = decodedJWT.getSubject();
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
                 filterChain.doFilter(request, response);
             } catch (TokenExpiredException e) {
                 log.info("CustomAuthorizationFilter : Access Token이 만료되었습니다.");

@@ -98,8 +98,12 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
 
     @Override
     public Map<String, String> refresh(String refreshToken) {
+
+        // === Refresh Token 유효성 검사 === //
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(JWT_SECRET)).build();
         DecodedJWT decodedJWT = verifier.verify(refreshToken);
+
+        // === Access Token 재발급 === //
         long now = System.currentTimeMillis();
         String username = decodedJWT.getSubject();
         Account account = accountRepository.findByUsername(username)
@@ -113,20 +117,13 @@ public class AccountServiceImpl implements AccountService, UserDetailsService {
                 .withClaim("roles", account.getRoles().stream().map(Role::getName)
                         .collect(Collectors.toList()))
                 .sign(Algorithm.HMAC256(JWT_SECRET));
-
         Map<String, String> accessTokenResponseMap = new HashMap<>();
 
-        // Refresh Token 만료시간 계산해 1개월 미만일 시 refresh token도 발급
+        // === 현재시간과 Refresh Token 만료날짜를 통해 남은 만료기간 계산 === //
+        // === Refresh Token 만료시간 계산해 1개월 미만일 시 refresh token도 발급 === //
         long refreshExpireTime = decodedJWT.getClaim("exp").asLong() * 1000;
-
         long diffDays = (refreshExpireTime - now) / 1000 / (24 * 3600);
         long diffMin = (refreshExpireTime - now) / 1000 / 60;
-        log.info("========= DIFFDAYS : {} =========", diffDays);
-        log.info("========= DIFFMIN : {} =========", diffMin);
-        log.info("========= refresh Exp Time : {} =========", LocalDateTime.ofInstant(Instant.ofEpochMilli(refreshExpireTime),
-                TimeZone.getDefault().toZoneId()));
-        log.info("========= now : {} =========", LocalDateTime.ofInstant(Instant.ofEpochMilli(now),
-                TimeZone.getDefault().toZoneId()));
         if (diffMin < 5) {
             String newRefreshToken = JWT.create()
                     .withSubject(account.getUsername())
